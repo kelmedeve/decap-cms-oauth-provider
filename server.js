@@ -5,13 +5,33 @@ const fetch = require("node-fetch");
 const app = express();
 app.use(bodyParser.json());
 
+const CLIENT_ID = process.env.OAUTH_CLIENT_ID;
+const CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET;
+const GITHUB_URL = process.env.OAUTH_GITHUB_URL || "https://github.com";
+
+// Endpoint de autenticação
 app.get("/auth", (req, res) => {
-  res.send("OAuth Provider Auth Endpoint funcionando!");
+  const redirect = `${GITHUB_URL}/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo,user`;
+  res.redirect(redirect);
 });
 
-app.get("/callback", (req, res) => {
-  res.send("OAuth Provider Callback Endpoint funcionando!");
+// Callback do GitHub
+app.get("/callback", async (req, res) => {
+  const code = req.query.code;
+
+  const response = await fetch(`${GITHUB_URL}/login/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      code
+    })
+  });
+
+  const data = await response.json();
+  res.json(data);
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Provider rodando na porta ${port}`));
+app.listen(port, () => console.log(`OAuth Provider rodando na porta ${port}`));
