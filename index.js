@@ -6,12 +6,17 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Rota de autenticação
+// rota raiz
+app.get("/", (req, res) => {
+  res.send("Decap CMS OAuth Provider está rodando 🚀");
+});
+
+// rota de autenticação
 app.get("/auth", (req, res) => {
   res.json({ message: "Auth endpoint funcionando!" });
 });
 
-// Rota de callback
+// rota de callback
 app.get("/callback", (req, res) => {
   res.json({ message: "Callback endpoint funcionando!" });
 });
