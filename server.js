@@ -16,10 +16,5 @@ app.get("/callback", (req, res) => {
   res.json({ message: "Callback endpoint funcionando!" });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
-
+// Exporta o app para o Vercel
 module.exports = app;
-
